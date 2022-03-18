@@ -215,89 +215,101 @@ function init() {
     z: 30,
   });
   inits();
-	addSphere();
-	render();
+  addSphere();
+  render();
+  chnageText();
 }
 
+var stars = [];
 
+//assign three.js objects to each variable
+function inits() {
+  var camera, scene, renderer;
+  //camera
+  camera = new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    1,
+    1000
+  );
+  camera.position.z = 5;
 
-var  stars=[];
-	 
-    //assign three.js objects to each variable
-    function inits(){
-      var camera, scene, renderer;
-      //camera
-      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-      camera.position.z = 5;	 
-  
-      //scene
-      scene = new THREE.Scene();
-       
-      //renderer
-      renderer = new THREE.WebGLRenderer();
-      //set the size of the renderer
-      renderer.setSize( window.innerWidth, window.innerHeight );
-       
-      //add the renderer to the html document body
-      document.body.appendChild( renderer.domElement );
-    }
-  
-  
-    function addSphere(){
-  
-          for ( var z= -1000; z < 1000; z+=15 ) {
-      
-            // Make a sphere (exactly the same as before). 
-            var geometry   = new THREE.SphereGeometry(0.5, 32, 32)
-            var material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-            var sphere = new THREE.Mesh(geometry, material)
-      
-            // This time we give the sphere random x and y positions between -500 and 500
-            sphere.position.x = Math.random() * 1000 - 500;
-            sphere.position.y = Math.random() * 1000 - 500;
-            sphere.position.z = Math.random() * 1000 - 500;
+  //scene
+  scene = new THREE.Scene();
 
-      
-            // Then set the z position to where it is in the loop (distance of camera)
-            // sphere.position.z = z;
-      
-            // // scale it up a bit
-            sphere.scale.x = sphere.scale.y = 2;
-      
-            //add the sphere to the scene
-            scene.add( sphere );
-      
-            //finally push it to the stars array 
-            stars.push(sphere); 
-            console.log(stars.length);
-          }
-    }
-  
-    function animateStars() { 
-          
-      // loop through each star
-      for(var i=0; i<stars.length; i++) {
-        
-        var star = stars[i]; 
-          
-        // and move it forward dependent on the mouseY position. 
-        star.position.y +=  i/5;
-          
-        if(star.position.y>1000) star.position.y-=500; 
-        
-      }
-    
-    }
-  
-    function render() {
-      //get the frame
-      requestAnimationFrame( render );
-  
-      //render the scene
-      renderer.render( scene, camera );
-        animateStars();
-  
-    }
+  //renderer
+  renderer = new THREE.WebGLRenderer();
+  //set the size of the renderer
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
+  //add the renderer to the html document body
+}
+
+function addSphere() {
+  for (var z = -1000; z < 1000; z += 15) {
+    // Make a sphere (exactly the same as before).
+    var geometry = new THREE.SphereGeometry(0.5, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    var sphere = new THREE.Mesh(geometry, material);
+
+    // This time we give the sphere random x and y positions between -500 and 500
+    sphere.position.x = Math.random() * 1000 - 500;
+    sphere.position.y = Math.random() * 1000 - 500;
+    sphere.position.z = Math.random() * 1000 - 500;
+
+    // Then set the z position to where it is in the loop (distance of camera)
+    // sphere.position.z = z;
+
+    // // scale it up a bit
+    sphere.scale.x = sphere.scale.y = 2;
+
+    //add the sphere to the scene
+    scene.add(sphere);
+
+    //finally push it to the stars array
+    stars.push(sphere);
+  }
+}
+
+function animateStars() {
+  // loop through each star
+  for (var i = 0; i < stars.length; i++) {
+    var star = stars[i];
+
+    // and move it forward dependent on the mouseY position.
+    star.position.y += i / 4;
+
+    if (star.position.y > 1000) star.position.y -= 500;
+  }
+}
+
+function render() {
+  //get the frame
+  requestAnimationFrame(render);
+
+  //render the scene
+  renderer.render(scene, camera);
+  animateStars();
+}
+
+function chnageText() {
+  setTimeout(() => {
+    $("#main-head").animate({ opacity: 0 }, 500, function () {
+      $(this).html("Influenced By Gravity?").animate({ opacity: 1 }, 500);
+    });
+    $("#but").fadeOut("slow");
+    $("#but2").delay(500).fadeIn(2000);
+  }, 5000);
+}
+
+function launch() {
+  gsap.to(camera.position, {
+    duration: 5,
+    x: 0,
+    y: 1000,
+    z: 0,
+  });
+}
 
 document.getElementById("but").addEventListener("click", init);
+document.getElementById("but2").addEventListener("click", launch);
